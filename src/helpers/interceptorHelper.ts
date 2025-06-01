@@ -5,12 +5,17 @@ const baseURL = process.env.NEXT_PUBLIC_baseURL;
 export default class InterceptorHelper {
   // intercept request
   static async interceptRequest(options: RequestInit = {}): Promise<RequestInit> {
-    // console.log(JSON.parse(localStorage.getItem("userData") || "{}"));
     // get access token from local storage
-    const accessToken = JSON.parse(localStorage.getItem("userData") || "{}")?.access_token;
+    const accessToken = localStorage.getItem("accessToken");
+    console.log("accessToken", accessToken);
+    if (accessToken) {
+      options.headers = {
+        ...options.headers,
+        Authorization: `Bearer ${accessToken}`,
+      };
+    }
 
     options.headers = {
-      Authorization: `Bearer ${accessToken}`,
       "Accept-Language": "en",
       "Content-Language": "en",
       "Content-Type": "application/json",

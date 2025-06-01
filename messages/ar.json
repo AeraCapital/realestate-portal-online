@@ -1,8 +1,6 @@
 {
   "common": {
-    "empty_str": "",
-    "verify_your_account": "قم بتأكيد حسابك",
-    "logout": "تسجيل الخروج"
+    "empty_str": ""
   },
   "footer": {
     "helpful_links": "روابط مساعدة",

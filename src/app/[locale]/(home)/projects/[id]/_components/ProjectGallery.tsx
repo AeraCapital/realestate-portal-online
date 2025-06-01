@@ -1,30 +1,27 @@
 "use client";
 
+import galleryImage2 from "@/app/assets/projects/gallery-2.png";
+import galleryImage3 from "@/app/assets/projects/gallery-3.png";
+import galleryImage from "@/app/assets/projects/gallery.png";
 import {Carousel, CarouselContent, CarouselItem, type CarouselApi} from "@/components/ui/carousel";
 import {cn} from "@/lib/utils";
 import {ArrowLeft, ArrowRight} from "lucide-react";
 import Image from "next/image";
-import {useCallback, useEffect, useState} from "react";
-import placeholder from "@/app/assets/project-details/placeholder.webp";
+import * as React from "react";
 
-export default function ProjectGallery({
-  images,
-  isLoading,
-}: {
-  images: string[];
-  isLoading: boolean;
-}) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [mainApi, setMainApi] = useState<CarouselApi>();
-  const [thumbApi, setThumbApi] = useState<CarouselApi>();
+const defImages = [galleryImage, galleryImage2, galleryImage3];
+export default function ProjectGallery({images}: {images: string[]}) {
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [mainApi, setMainApi] = React.useState<CarouselApi>();
+  const [thumbApi, setThumbApi] = React.useState<CarouselApi>();
 
-  const onSelect = useCallback(() => {
+  const onSelect = React.useCallback(() => {
     if (!mainApi || !thumbApi) return;
     setCurrentIndex(mainApi.selectedScrollSnap());
     thumbApi.scrollTo(mainApi.selectedScrollSnap());
   }, [mainApi, thumbApi]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!mainApi) return;
     onSelect();
     mainApi.on("select", onSelect);
@@ -34,11 +31,7 @@ export default function ProjectGallery({
   }, [mainApi, onSelect]);
 
   // Fix: Use default images if images array is empty
-  const displayedImages = isLoading ? [placeholder.src] : images && images.length > 0 ? images : [];
-
-  // Check if we're at the first or last slide
-  const isAtStart = currentIndex === 0;
-  const isAtEnd = currentIndex === displayedImages.length - 1;
+  const displayedImages = images && images.length > 0 ? images : defImages;
 
   return (
     <>
@@ -69,34 +62,22 @@ export default function ProjectGallery({
             </CarouselItem>
           ))}
         </CarouselContent>
-        {displayedImages.length > 1 && (
-          <>
-            <button
-              className={cn(
-                "absolute left-[2%] top-[50%] flex size-[2rem] flex-shrink-0 -translate-y-1/2 items-center justify-center rounded-full bg-white text-colors-primary-colors-500 shadow-lg transition-colors duration-300 ease-in-out",
-                isAtStart
-                  ? "cursor-not-allowed opacity-50"
-                  : "hover:bg-colors-primary-colors-500 hover:text-white"
-              )}
-              onClick={() => !isAtStart && mainApi?.scrollPrev()}
-              disabled={isAtStart}
-            >
-              <ArrowLeft className='size-[1.2rem]' />
-            </button>
-            <button
-              className={cn(
-                "absolute right-[2%] top-[50%] flex size-[2rem] flex-shrink-0 -translate-y-1/2 items-center justify-center rounded-full bg-white text-colors-primary-colors-500 shadow-lg transition-colors duration-300 ease-in-out",
-                isAtEnd
-                  ? "cursor-not-allowed opacity-50"
-                  : "hover:bg-colors-primary-colors-500 hover:text-white"
-              )}
-              onClick={() => !isAtEnd && mainApi?.scrollNext()}
-              disabled={isAtEnd}
-            >
-              <ArrowRight className='size-[1.2rem]' />
-            </button>
-          </>
-        )}
+        <button
+          className={
+            "absolute left-[2%] top-[50%] flex size-[2rem] flex-shrink-0 -translate-y-1/2 items-center justify-center rounded-full bg-white text-colors-primary-colors-500 shadow-lg transition-colors duration-300 ease-in-out hover:bg-colors-primary-colors-500 hover:text-white"
+          }
+          onClick={() => mainApi?.scrollPrev()}
+        >
+          <ArrowLeft className='size-[1.2rem]' />
+        </button>
+        <button
+          className={
+            "absolute right-[2%] top-[50%] flex size-[2rem] flex-shrink-0 -translate-y-1/2 items-center justify-center rounded-full bg-white text-colors-primary-colors-500 shadow-lg transition-colors duration-300 ease-in-out hover:bg-colors-primary-colors-500 hover:text-white"
+          }
+          onClick={() => mainApi?.scrollNext()}
+        >
+          <ArrowRight className='size-[1.2rem]' />
+        </button>
       </Carousel>
       <div>
         <Carousel
